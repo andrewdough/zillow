@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Zillow Search Test</title>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.2/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+	<link href="/zillow/css/bootstrap.min.css" rel="stylesheet">
+	<style>
+	.bottom-buffer { margin-bottom: 18px; }
+	.address { font-size: 115%; font-weight: bold; }
+	.estimate { font-size: 150%; font-weight: bold; color: green; }
+	.estimate-updated { font-size: 85%; font-style: italic; }
+	</style>
+
+	<script type="text/javascript">
+	$(function() {
+		// form handler
+		$('#search-form').submit(function() {
+			// validation
+			var hasErrors = false;
+			var data = [];
+			$(this).find(':input').not(':input[type=submit]').each(function() {
+				if ($(this).hasClass('required') && $(this).val() == '') {
+					hasErrors = true;
+					$(this).parent('.form-group').addClass('has-error');
+				}
+
+				data.push({name: $(this).attr('name'), value: $(this).val()});
+			});
+
+			// ajax GET request to API
+			if (!hasErrors) {
+				$('#results-container').html('');
+				$.ajax({
+					method: 'GET',
+					url: '/zillow/api/search.php',
+					data: data,
+					success: function(response) {
+						$('#result-container').html(response);
+					},
+					error: function (xhr, ajaxOptions, thrownError) {
+						$('#result-container').html('Something went terribly wrong!');
+				    }
+				});
+			}
+
+			return false;
+		});
+
+		// clear form error classes on value change
+		$('.required').change(function() {
+			$(this).parent('.form-group').removeClass('has-error');
+		});
+	});
+	</script>
+</head>
+<body>
+	<div class="container" style="margin-top: 42px;">
+		<div class="row">
+			<!-- SEARCH FORM -->
+			<div class="col-lg-4">
+				<div class="well bs-component">
+					<form id="search-form">
+						<fieldset>
+							<legend>Find a property</legend>
+						</fieldset>
+						<div class="form-group">
+                			<label class="control-label" for="address-input">Address</label>
+                  			<input type="text" name="address" class="form-control required" id="address-input" placeholder="123 E St" />
+                		</div>
+                		<div class="row">
+                			<div class="col-lg-8">
+                				<div class="form-group">
+		                			<label class="control-label" for="city-input">City</label>
+		                  			<input type="text" name="city" class="form-control required" id="city-input" placeholder="Los Angeles" />
+                				</div>
+                			</div>
+                			<div class="col-lg-4">
+                				<div class="form-group">
+                					<label class="control-label" for="state-select">State</label>
+                					<select name="state" class="form-control required" id="state-select">
+                						<option value="">-</option>
+										<option value="AL">AL</option>
+										<option value="AK">AK</option>
+										<option value="AZ">AZ</option>
+										<option value="AR">AR</option>
+										<option value="CA">CA</option>
+										<option value="CO">CO</option>
+										<option value="CT">CT</option>
+										<option value="DE">DE</option>
+										<option value="DC">DC</option>
+										<option value="FL">FL</option>
+										<option value="GA">GA</option>
+										<option value="HI">HI</option>
+										<option value="ID">ID</option>
+										<option value="IL">IL</option>
+										<option value="IN">IN</option>
+										<option value="IA">IA</option>
+										<option value="KS">KS</option>
+										<option value="KY">KY</option>
+										<option value="LA">LA</option>
+										<option value="ME">ME</option>
+										<option value="MD">MD</option>
+										<option value="MA">MA</option>
+										<option value="MI">MI</option>
+										<option value="MN">MN</option>
+										<option value="MS">MS</option>
+										<option value="MO">MO</option>
+										<option value="MT">MT</option>
+										<option value="NE">NE</option>
+										<option value="NV">NV</option>
+										<option value="NH">NH</option>
+										<option value="NJ">NJ</option>
+										<option value="NM">NM</option>
+										<option value="NY">NY</option>
+										<option value="NC">NC</option>
+										<option value="ND">ND</option>
+										<option value="OH">OH</option>
+										<option value="OK">OK</option>
+										<option value="OR">OR</option>
+										<option value="PA">PA</option>
+										<option value="RI">RI</option>
+										<option value="SC">SC</option>
+										<option value="SD">SD</option>
+										<option value="TN">TN</option>
+										<option value="TX">TX</option>
+										<option value="UT">UT</option>
+										<option value="VT">VT</option>
+										<option value="VA">VA</option>
+										<option value="WA">WA</option>
+										<option value="WV">WV</option>
+										<option value="WI">WI</option>
+										<option value="WY">WY</option>
+                					</select>
+                				</div>
+                			</div>
+                		</div>
+
+                		<button type="submit" class="btn btn-primary pull-right">Submit</button>
+                		<div style="clear: both;"></div>
+					</form>
+				</div>
+			</div>
+			<!-- SEARCH RESULTS -->
+			<div class="col-lg-8">
+				<div id="result-container">
+					<br /><br />
+					<center>Search for a property by address using the form on the left</center>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
